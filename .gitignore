@@ -4,7 +4,7 @@ thirdparty/
 x64/
 
 # Files
-*.vcxproj
+#*.vcxproj
 *.vcxproj.user
 *.vcxproj.filters
 #*.sln
