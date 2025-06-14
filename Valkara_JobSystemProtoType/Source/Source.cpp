@@ -2,8 +2,8 @@
 #include <mutex>
 #include <queue>
 #include <condition_variable>
+#include <optional>
 
-//using Type = int;
 template <typename Type>
 class ThreadSafeQueue
 {
@@ -31,20 +31,23 @@ class ThreadSafeQueue
 		return value;
 	}
 
-	//function try_pop()->Optional<T>:
-	//acquire mutex
-	//if queue is empty :
-	//release mutex
-	//return None
-	//item = queue.dequeue()
-	//release mutex
-	//return item
+	std::optional<Type> TryPop()
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		if (m_queue.empty())
+			return std::nullopt;
 
-	//function is_empty() -> bool:
-	//acquire mutex
-	//result = queue.is_empty()
-	//release mutex
-	//return result
+		Type value = m_queue.front();
+		m_queue.pop();
+		return value;
+	}
+
+	bool IsEmpty() const
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		return m_queue.empty();
+	}
+
 };
 
 int main()
