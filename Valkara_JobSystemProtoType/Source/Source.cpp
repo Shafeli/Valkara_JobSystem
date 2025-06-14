@@ -11,7 +11,9 @@ class ThreadSafeQueue
 	mutable std::mutex m_mutex;
 	std::condition_variable m_conditionVariable;
 
-	void Push(const Type& value)
+public:
+
+	void Push(Type&& value) // Copy elision
 	{
 		{ // scope to unlock mutex
 
@@ -53,7 +55,35 @@ class ThreadSafeQueue
 int main()
 {
 
+	ThreadSafeQueue<int> queue;
 
+	queue.Push(42);
+	queue.Push(41);
+	queue.Push(2);
+	queue.Push(4);
+
+	auto val = queue.TryPop();
+
+	if (val.has_value())
+		std::cout << "Got: " << val.value() << "\n";
+
+
+	val = queue.TryPop();
+
+	if (val.has_value())
+		std::cout << "Got: " << val.value() << "\n";
+
+
+	val = queue.TryPop();
+
+	if (val.has_value())
+		std::cout << "Got: " << val.value() << "\n";
+
+
+	val = queue.TryPop();
+
+	if (val.has_value())
+		std::cout << "Got: " << val.value() << "\n";
 
 	return 0;
 }
