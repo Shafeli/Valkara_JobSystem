@@ -125,7 +125,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ThreadSafeQueue\LockingThreadSafeQueue.cpp" />
     <ClCompile Include="Source\Source.cpp" />
+    <ClCompile Include="Source\ThreadPool\ThreadPool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\ThreadSafeQueue\LockingThreadSafeQueue.h" />
+    <ClInclude Include="Source\ThreadPool\ThreadPool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

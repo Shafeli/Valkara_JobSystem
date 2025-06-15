@@ -1,61 +1,37 @@
+#include <cassert>
 #include <iostream>
-#include <mutex>
-#include <queue>
-#include <condition_variable>
-#include <optional>
+#include "ThreadSafeQueue/LockingThreadSafeQueue.h"
+#include "ThreadPool/ThreadPool.h"
 
-template <typename Type>
-class ThreadSafeQueue
+void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 {
-	std::queue<Type> m_queue;
-	mutable std::mutex m_mutex;
-	std::condition_variable m_conditionVariable;
+	ThreadPool& pool = poolToTest;
 
-public:
+	std::atomic<int> counter{ 0 };
 
-	void Push(Type&& value) // Copy elision
+	// Enqueue several tasks
+	for (int i = 0; i < TestAmount; ++i)
 	{
-		{ // scope to unlock mutex
-
-			std::lock_guard<std::mutex> lock(m_mutex);
-			m_queue.push(value);
-			
-		}
-		m_conditionVariable.notify_one();
+		pool.Enqueue([&counter] { ++counter; });
 	}
 
-	Type Pop()
+	// Wait for tasks to finish
+	while (pool.Size() > 0)
 	{
-		std::unique_lock<std::mutex> lock(m_mutex);
-		m_conditionVariable.wait(lock, [this] {return !m_queue.empty(); }); //condition.wait(mutex)  atomically releases mutex and waits
-		Type value = m_queue.front();
-		m_queue.pop();
-		return value;
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 
-	std::optional<Type> TryPop()
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
-		if (m_queue.empty())
-			return std::nullopt;
+	// Give threads a moment to finish incrementing
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-		Type value = m_queue.front();
-		m_queue.pop();
-		return value;
-	}
-
-	bool IsEmpty() const
-	{
-		std::lock_guard<std::mutex> lock(m_mutex);
-		return m_queue.empty();
-	}
-
-};
+	assert(counter == TestAmount);
+	std::cout << "TestThreadPoolBasic passed! ThreadPool Processed : " << TestAmount << " Tasks \n";
+}
 
 int main()
 {
 
-	ThreadSafeQueue<int> queue;
+	LockingThreadSafeQueue<int> queue;
 
 	queue.Push(42);
 	queue.Push(41);
@@ -85,5 +61,19 @@ int main()
 	if (val.has_value())
 		std::cout << "Got: " << val.value() << "\n";
 
+
+	ThreadPool testingPool(4);
+
+	testingPool.Enqueue([] { std::cout << "Hello from thread pool!\n"; });
+
+	// Add a small delay
+	while (testingPool.Size() > 0)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+
+	TestThreadPoolBasic(testingPool, 15);
+	TestThreadPoolBasic(testingPool, 1);
+	TestThreadPoolBasic(testingPool, 0);
 	return 0;
 }
