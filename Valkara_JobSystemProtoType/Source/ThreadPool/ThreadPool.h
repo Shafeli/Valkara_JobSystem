@@ -13,46 +13,17 @@ class ThreadPool
 	std::atomic<bool> m_run{ false };
 
 public:
-	ThreadPool(size_t threadCount)
-	{
-		m_run = true;
-		for (size_t i = 0; i < threadCount; ++i)
-		{
-			workers.emplace_back(
 
-				[this]
-				{
-					while (m_run)
-					{
-						auto task = m_taskQueue.TryPop();
-						if (task.has_value())
-						{
-							task.value()();
-						}
-						else
-						{
-							std::this_thread::yield();
-						}
-					}
+	// On creation, the thread pool will spawn a number of threads equal to threadCount
+	ThreadPool(size_t threadCount);
 
-				}
+	// on destruction, the thread pool will stop all threads and wait for them to finish
+	~ThreadPool();
 
-			);
-		}
-	}
-
-	~ThreadPool()
-	{
-		m_run = false;
-		for (auto& thread: workers)
-		{
-			if (thread.joinable())
-				thread.join();
-		}
-	}
-
+	// returns the number of tasks in the queue
 	size_t Size() { return m_taskQueue.Size(); }
 
+	// Enqueue a task to the thread pool
 	template<typename task>
 	void Enqueue(task&& T)
 	{

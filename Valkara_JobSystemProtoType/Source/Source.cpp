@@ -25,7 +25,7 @@ void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	assert(counter == TestAmount);
-	std::cout << "TestThreadPoolBasic passed! ThreadPool Processed : " << TestAmount << " Tasks \n";
+	std::cout << "Test Thread Pool Basic Passed! ThreadPool Processed: " << TestAmount << " Tasks \n";
 }
 
 int main()
@@ -72,8 +72,9 @@ int main()
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
-	TestThreadPoolBasic(testingPool, 15);
+	TestThreadPoolBasic(testingPool, 150);
 	TestThreadPoolBasic(testingPool, 1);
 	TestThreadPoolBasic(testingPool, 0);
+	TestThreadPoolBasic(testingPool, 2000);
 	return 0;
 }
