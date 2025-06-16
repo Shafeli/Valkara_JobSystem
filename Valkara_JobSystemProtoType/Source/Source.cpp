@@ -9,10 +9,23 @@ void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 
 	std::atomic<int> counter{ 0 };
 
+	std::mutex coutMutex;
+
 	// Enqueue several tasks
 	for (int i = 0; i < TestAmount; ++i)
 	{
-		pool.Enqueue([&counter] { ++counter; });
+		pool.Enqueue
+		(
+			[&counter, &coutMutex] 
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				int value = ++counter;
+				{
+					std::lock_guard<std::mutex> lock(coutMutex);
+					std::cout << "Test processing: " << value << " Task \n";
+				}
+			}
+		);
 	}
 
 	// Wait for tasks to finish
