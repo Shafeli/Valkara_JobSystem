@@ -18,7 +18,8 @@ void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 		(
 			[&counter, &consoleMutex] 
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 10 + 1));
+
 				int value = ++counter;
 				{
 					std::lock_guard<std::mutex> lock(consoleMutex); // the window is a shared resources needs a mutex
@@ -74,20 +75,23 @@ int main()
 	if (val.has_value())
 		std::cout << "Got: " << val.value() << "\n";
 
-
-	ThreadPool testingPool(4);
-
-	testingPool.Enqueue([] { std::cout << "Hello from thread pool!\n"; });
-
-	// Add a small delay
-	while (testingPool.Size() > 0)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
+		ThreadPool testingPool(4);
 
-	TestThreadPoolBasic(testingPool, 150);
-	TestThreadPoolBasic(testingPool, 1);
-	TestThreadPoolBasic(testingPool, 0);
-	TestThreadPoolBasic(testingPool, 2000);
+		testingPool.Enqueue([] { std::cout << "Hello from thread pool!\n"; });
+
+		// Add a small delay
+		while (testingPool.Size() > 0)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+
+		TestThreadPoolBasic(testingPool, 150);
+		TestThreadPoolBasic(testingPool, 1);
+		TestThreadPoolBasic(testingPool, 0);
+		TestThreadPoolBasic(testingPool, 2000);
+
+	} 	// Testing Thread Pool Destructor
+
 	return 0;
 }

@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
-#include <thread>
-#include <functional>
 #include <atomic>
+#include <functional>
+#include <thread>
+#include <vector>
 #include "../ThreadSafeQueue/LockingThreadSafeQueue.h"
 
+// TODO: Maybe supports priority buckets or worker affinity (Thread Pinning)
 class ThreadPool
 {
 	std::vector<std::thread> workers;
@@ -24,6 +25,9 @@ public:
 	size_t Size() { return m_taskQueue.Size(); }
 
 	// Enqueue a task to the thread pool
+	void Enqueue(std::function<void()> task);
+
+	// Enqueue lambdas, std::bind, or function pointer
 	template<typename task>
 	void Enqueue(task&& T)
 	{
