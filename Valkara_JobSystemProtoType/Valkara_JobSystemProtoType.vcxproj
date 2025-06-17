@@ -125,11 +125,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\JobSystemProtoType\JobSystemProtoType.cpp" />
     <ClCompile Include="Source\ThreadSafeQueue\LockingThreadSafeQueue.cpp" />
     <ClCompile Include="Source\Source.cpp" />
     <ClCompile Include="Source\ThreadPool\ThreadPool.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\JobSystemProtoType\Job.h" />
+    <ClInclude Include="Source\JobSystemProtoType\JobSystemProtoType.h" />
     <ClInclude Include="Source\ThreadSafeQueue\LockingThreadSafeQueue.h" />
     <ClInclude Include="Source\ThreadPool\ThreadPool.h" />
   </ItemGroup>
