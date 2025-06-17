@@ -21,7 +21,7 @@ void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 				int value = ++counter;
 				{
-					std::lock_guard<std::mutex> lock(coutMutex);
+					std::lock_guard<std::mutex> lock(coutMutex); // the window is a shared resources needs a mutex
 					std::cout << "Test processing: " << value << " Task \n";
 				}
 			}
