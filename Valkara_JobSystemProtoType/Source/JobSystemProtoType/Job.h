@@ -9,4 +9,5 @@ private:
 
 public:
 	std::function<void()> Task; // The task to be executed by the job
+
 };
