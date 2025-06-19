@@ -9,14 +9,9 @@ struct JobMetaData
 	std::chrono::steady_clock::time_point endTime;
 };
 
-struct Job
-{
-	std::function<void()> Task; // The task to be executed by the job
-	std::shared_ptr<JobMetaData> Metrics;
-};
-
 struct JobHandle
 {
+	std::function<void()> Task; // The task to be executed by the job
 	std::shared_ptr<std::atomic<int>> Counter;
 	std::shared_ptr<JobMetaData> Metrics;
 
