@@ -21,7 +21,7 @@ public:
         auto meta = std::make_shared<JobMetaData>();
         meta->counter = counter.get();
 
-        Job job;
+        JobHandle job;
 
         job.Task = 
             [func = std::move(work), meta]()
@@ -47,7 +47,7 @@ public:
         job.Metrics = meta;
 
         m_threadPool.Enqueue(job.Task);
-        return JobHandle{ counter, meta };
+        return job;
 	}
 };
 
