@@ -15,15 +15,16 @@ public:
 
 	}
 
+	// Submits a function to the thread pool and returns a JobHandle.
 	JobHandle Submit(std::function<void()> work)
 	{
         auto counter = std::make_shared<std::atomic<int>>(1);
         auto meta = std::make_shared<JobMetaData>();
         meta->counter = counter.get();
 
-        JobHandle job;
+        JobHandle jobHandle;
 
-        job.Task = 
+        jobHandle.Task = 
             [func = std::move(work), meta]()
 		{
             meta->startTime = std::chrono::steady_clock::now(); // Start profile timer
@@ -44,10 +45,10 @@ public:
             meta->counter->fetch_sub(1, std::memory_order_release); // More explicit and gives you memory ordering control
 		};
 
-        job.Metrics = meta;
+        jobHandle.Metrics = meta;
 
-        m_threadPool.Enqueue(job.Task);
-        return job;
+        m_threadPool.Enqueue(jobHandle.Task);
+        return jobHandle;
 	}
 };
 
