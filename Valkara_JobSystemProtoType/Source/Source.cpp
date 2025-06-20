@@ -78,7 +78,13 @@ int main()
 	{
 		ThreadPool testingPool(4);
 
-		testingPool.Enqueue([] { std::cout << "Hello from thread pool!\n"; });
+		testingPool.Enqueue
+		(
+			[]
+			{
+				std::cout << "Hello from thread pool!\n"; 
+			}
+		);
 
 		// Add a small delay
 		while (testingPool.Size() > 0)
@@ -92,6 +98,11 @@ int main()
 		TestThreadPoolBasic(testingPool, 2000);
 
 	} 	// Testing Thread Pool Destructor
+
+	// Testing Scope for JobSystema
+	{
+
+	}
 
 	return 0;
 }
