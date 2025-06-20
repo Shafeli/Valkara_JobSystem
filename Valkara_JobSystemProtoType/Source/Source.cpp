@@ -1,8 +1,15 @@
 #include <cassert>
 #include <iostream>
+
+#include "JobSystemProtoType/JobSystemProtoType.h"
 #include "ThreadSafeQueue/LockingThreadSafeQueue.h"
 #include "ThreadPool/ThreadPool.h"
 
+#define LOCKING_QUEUE_TEST 0
+#define THREAD_POOL_TEST 0
+#define JOB_SYSTEM_PROTOTYPE_TEST 1
+
+#if THREAD_POOL_TEST
 void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 {
 	ThreadPool& pool = poolToTest;
@@ -41,10 +48,11 @@ void TestThreadPoolBasic(ThreadPool& poolToTest, int TestAmount)
 	assert(counter == TestAmount);
 	std::cout << "Test Thread Pool Basic Passed! ThreadPool Processed: " << TestAmount << " Tasks \n";
 }
+#endif
 
 int main()
 {
-
+#if LOCKING_QUEUE_TEST
 	LockingThreadSafeQueue<int> queue;
 
 	queue.Push(42);
@@ -74,7 +82,9 @@ int main()
 
 	if (val.has_value())
 		std::cout << "Got: " << val.value() << "\n";
+#endif
 
+#if THREAD_POOL_TEST
 	{
 		ThreadPool testingPool(4);
 
@@ -98,11 +108,14 @@ int main()
 		TestThreadPoolBasic(testingPool, 2000);
 
 	} 	// Testing Thread Pool Destructor
+#endif
 
+#if JOB_SYSTEM_PROTOTYPE_TEST
 	// Testing Scope for JobSystema
 	{
-
+		JobSystemProtoType TestingJobSystem;
 	}
+#endif
 
 	return 0;
 }
