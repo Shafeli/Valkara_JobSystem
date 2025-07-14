@@ -19,7 +19,7 @@ Currently implementing the foundational job system using a custom thread pool an
 - [x] Thread pool
 - [x] Thread-safe queue or data structure
 - [x] Worker threads pulling tasks with graceful shutdown
-- [ ] Basic job system built on top of the thread pool
+- [x] Basic job system built on top of the thread pool
 
 ---
 
